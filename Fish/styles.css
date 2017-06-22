@@ -1,0 +1,10 @@
+#target {
+	margin:auto; 
+	background-image: url(Images/background.png);
+	background-size: 800px 500px;
+}
+#shrink {
+	transition: 1s all linear;
+}
+
+/*Background Image*/

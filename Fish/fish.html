@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Fish Game! </title>
+<link rel="stylesheet" type="text/css" href="styles.css">
+<script src="https://simplycodingcourses.com/files/simplyjs/simply.js"></script>
+<script>
+function start(){
+sjs.open("target",800,500);
+
+	var player = new sjs.Image("images/fish_left.png");
+	player.type = "player";
+	player.setSize(100,50);
+	player.centerH();
+	player.friction = .05;
+	player.accel = .3;
+	player.bounce();
+
+	sjs.keyDown(RIGHT_KEY,function(){ 
+player.setImage("Images/fish_right.png");
+player.pushRight();
+});
+
+	sjs.keyDown(LEFT_KEY,function(){
+		player.setImage("Images/fish_left.png")
+player.pushLeft();
+	});
+
+	sjs.keyDown(UP_KEY,function(){
+player.pushUp();
+	});
+
+	sjs.keyDown(DOWN_KEY,function(){
+player.pushDown();
+	});
+
+var setcrumb = setInterval(function(){
+	var newCrumb = new sjs.Image("Images/crumbs.png");
+	newCrumb.type = "crumbs";
+	newCrumb.pushDown(10);
+	newCrumb.setGravity(5);
+	newCrumb.centerH();
+	newCrumb.noBounds = true;
+	newCrumb.friction = .6;
+}, 1000);
+
+
+
+sjs.onHit("crumbs", "bottom_screen", function(x,y){
+x.destroy();
+}); 
+
+sjs.onHit("player","crumbs",function(x,y){
+
+y.destroy();
+x.grow(100,50);
+setTimeout(function(){
+
+var pw = x.getWidth();
+var ph = x.getHeight();
+player.node.id = 'shrinking';
+var sheet = window.document.styleSheets[0]
+sheet.insertRule('"@keyframes shrink { from {width:"pw"; height:"ph";} to {width:"pw-100"; height:"ph-50";} } #shrinking { animation-name: shrink;	animation-duration: 1s; animation-iteration-count: 1;}', sheet.cssRules.length);
+player.setSize(pw-100,ph-50);
+ player.removeAttribute("id");
+
+}, 3000);
+
+
+	player.node.id = "player";
+});
+//Enemies
+setInterval(function(){
+	var speed = Math.floor(1 + Math.random * 10);
+
+	if (Math.random() > .5) {
+		var enemy = new sjs.Image("Images/fish2_right.png");
+		enemy.type = "enemy";
+		enemy.setSize(100,50);
+		enemy.friction = 0;
+		enemy.noBounds = true;
+		enemy.pushRight(speed);
+		enemy.scaleSize(Math.random() * (player.getWidth() / 50));
+		enemy.moveTo(-enemy.getWidth(), Math.random()*(enemy.getClamp().y));
+	}
+},1000);
+sjs.left_screen.offset(-500);	
+} //end start
+
+</script>
+</head>
+<body onload="start()">
+<h1> Fish Game! </h1>
+
+<div id="target"></div>
+</body>
+</html>
